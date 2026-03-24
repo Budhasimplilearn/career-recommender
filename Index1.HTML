@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Program Recommender</title>
+
+<style>
+body { font-family: Arial; margin:0; background:#f7f8fa; }
+.container { max-width:700px; margin:auto; padding:30px; }
+
+h1,h2 { text-align:center; }
+
+button {
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    background:#F4B400;
+    cursor:pointer;
+    font-size:16px;
+}
+
+input {
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.card {
+    background:white;
+    padding:20px;
+    margin-top:20px;
+    border-radius:12px;
+}
+
+.hidden { display:none; }
+
+.progress { height:6px; background:#ddd; margin-bottom:20px; }
+.bar { height:6px; background:#F4B400; width:0%; }
+
+.tag {
+    display:inline-block;
+    padding:6px 10px;
+    background:#eee;
+    border-radius:20px;
+    margin:5px;
+    font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LANDING -->
+<div id="landing">
+<h1>Find the right program for your career</h1>
+<p style="text-align:center;">Get personalized recommendations in 2 minutes</p>
+<button onclick="start()">Start Assessment</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="hidden">
+<div class="progress"><div id="bar" class="bar"></div></div>
+<h2 id="question"></h2>
+<div id="options"></div>
+</div>
+
+<!-- LEAD FORM -->
+<div id="lead" class="hidden">
+<h2>Get Your Personalized Results</h2>
+<input id="name" placeholder="Your Name">
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
+<button onclick="showResult()">Show My Recommendations</button>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="hidden">
+<h1>Your Career Roadmap</h1>
+<div id="profile"></div>
+<div id="output"></div>
+</div>
+
+</div>
+
+<script>
+
+const questions = [
+{key:"exp", q:"Your experience?", opts:["0-3","3-7","7-12","12+"]},
+{key:"role", q:"Your current role?", opts:["Individual","Manager","Senior Manager","Director+"]},
+{key:"goal", q:"What do you want next?", opts:["Promotion","Switch","Leadership","AI Skills"]},
+{key:"function", q:"Your background?", opts:["Finance","Tech","Marketing","Operations"]},
+{key:"ai", q:"AI/Data exposure?", opts:["None","Basic","Intermediate","Advanced"]},
+{key:"block", q:"Your biggest blocker?", opts:["Stuck","No leadership","Low salary","No skills","Confused"]}
+];
+
+let answers = {};
+let current = 0;
+
+function start(){
+document.getElementById("landing").classList.add("hidden");
+document.getElementById("quiz").classList.remove("hidden");
+loadQuestion();
+}
+
+function loadQuestion(){
+let q = questions[current];
+document.getElementById("question").innerText = q.q;
+
+let html="";
+q.opts.forEach(opt=>{
+html += `<button onclick="selectAnswer('${opt}')">${opt}</button>`;
+});
+
+document.getElementById("options").innerHTML = html;
+document.getElementById("bar").style.width = ((current+1)/questions.length*100)+"%";
+}
+
+function selectAnswer(val){
+answers[questions[current].key] = val;
+current++;
+
+if(current < questions.length){
+loadQuestion();
+} else {
+document.getElementById("quiz").classList.add("hidden");
+document.getElementById("lead").classList.remove("hidden");
+}
+}
+
+function showResult(){
+
+document.getElementById("lead").classList.add("hidden");
+document.getElementById("result").classList.remove("hidden");
+
+// PROFILE SUMMARY
+document.getElementById("profile").innerHTML = `
+<div>
+<span class="tag">${answers.exp} yrs</span>
+<span class="tag">${answers.function}</span>
+<span class="tag">${answers.goal}</span>
+</div>
+`;
+
+let programs = [];
+
+// SCORING ENGINE
+
+function addProgram(name, score, why, gain){
+programs.push({name, score, why, gain});
+}
+
+if(answers.goal === "Leadership"){
+addProgram("AI-Augmented Leadership", 90,
+"You are moving into leadership roles and need AI-driven decision-making skills.",
+["Leadership roles","AI strategy","CXO readiness"]);
+}
+
+if(answers.goal === "Promotion"){
+addProgram("Business Analytics & AI", 85,
+"You need stronger data-driven skills to accelerate your growth.",
+["Analytics skills","Better decisions","Career growth"]);
+}
+
+if(answers.goal === "Switch"){
+addProgram("Product Management", 88,
+"You want to switch careers and product roles offer strong growth.",
+["Career switch","Product skills","High growth"]);
+}
+
+if(answers.function === "Finance"){
+addProgram("Finance Leadership with AI", 87,
+"Combining finance with AI will unlock strategic roles.",
+["Strategic finance","AI skills","Leadership"]);
+}
+
+if(answers.block === "Confused"){
+addProgram("General Management", 80,
+"You need broader business clarity before making your next move.",
+["Business clarity","Leadership","Direction"]);
+}
+
+// DEFAULT PROGRAMS
+
+addProgram("AI for Business Strategy", 75,
+"AI strategy is becoming essential across all industries.",
+["Strategic thinking","AI adoption","Leadership"]);
+
+addProgram("Strategic Project Management", 70,
+"Managing complex projects is key for career growth.",
+["Project leadership","Risk management","Execution"]);
+
+// SORT & PICK TOP 3
+programs.sort((a,b)=>b.score-a.score);
+programs = programs.slice(0,3);
+
+// OUTPUT
+
+let html="";
+programs.forEach(p=>{
+html += `
+<div class="card">
+<h3>${p.name}</h3>
+<p><b>Why this fits you:</b> ${p.why}</p>
+<p><b>What you gain:</b></p>
+<ul>
+${p.gain.map(g=>`<li>${g}</li>`).join("")}
+</ul>
+</div>
+`;
+});
+
+document.getElementById("output").innerHTML = html;
+
+// 👉 LOG LEAD (for now console)
+console.log("Lead:", {
+name:document.getElementById("name").value,
+email:document.getElementById("email").value,
+phone:document.getElementById("phone").value,
+answers:answers,
+recommendations:programs
+});
+
+}
+
+</script>
+
+</body>
+</html>
