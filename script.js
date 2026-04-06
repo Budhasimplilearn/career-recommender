@@ -9,50 +9,44 @@ function showStep(index) {
     step.classList.toggle("active", i === index);
   });
 
-  // progress bar (optional)
   const progress = document.getElementById("progress");
   if (progress) {
-    progress.style.width = ((index) / (steps.length - 1)) * 100 + "%";
+    progress.style.width = (index / (steps.length - 1)) * 100 + "%";
   }
 }
 
-// SELECT (ONLY ONE OPTION PER STEP)
+// SINGLE SELECT
 function select(el, val) {
 
-  // get all cards in current step
   const cards = el.parentElement.querySelectorAll(".card");
 
-  // remove selection from all cards
   cards.forEach(c => c.classList.remove("selected"));
 
-  // add selection to clicked card
   el.classList.add("selected");
 
-  // store answer for this step
   answers[currentStep] = val;
 }
 
-// NEXT STEP
+// NEXT STEP (FIXED)
 function nextStep() {
 
-  // validation: must select option
   if (!answers[currentStep]) {
-    alert("Please select an option before continuing.");
+    alert("Please select an option");
     return;
+  }
+
+  // generate results BEFORE going to result step
+  if (currentStep === steps.length - 2) {
+    generateResults();
   }
 
   if (currentStep < steps.length - 1) {
     currentStep++;
     showStep(currentStep);
   }
-
-  // if last step → generate results
-  if (currentStep === steps.length - 1) {
-    generateResults();
-  }
 }
 
-// PREVIOUS STEP
+// PREVIOUS
 function prevStep() {
   if (currentStep > 0) {
     currentStep--;
@@ -60,7 +54,7 @@ function prevStep() {
   }
 }
 
-// GENERATE RESULTS
+// RESULTS
 function generateResults() {
 
   let scores = {
@@ -72,147 +66,115 @@ function generateResults() {
     ic: 0
   };
 
-  // SCORING LOGIC
-  if (answers.includes("ai")) {
-    scores.ai_product += 3;
-  }
+  if (answers.includes("ai")) scores.ai_product += 3;
+  if (answers.includes("product_mgmt")) scores.ai_product += 3;
+  if (answers.includes("strategy")) scores.cxo += 3;
+  if (answers.includes("project")) scores.project += 3;
+  if (answers.includes("finance_int") || answers.includes("finance")) scores.finance += 3;
+  if (answers.includes("ic")) scores.ic += 5;
+  if (answers.includes("lead") || answers.includes("cxo_int")) scores.cxo += 2;
 
-  if (answers.includes("product_mgmt")) {
-    scores.ai_product += 3;
-  }
-
-  if (answers.includes("strategy")) {
-    scores.cxo += 3;
-  }
-
-  if (answers.includes("project")) {
-    scores.project += 3;
-  }
-
-  if (answers.includes("finance_int") || answers.includes("finance")) {
-    scores.finance += 3;
-  }
-
-  if (answers.includes("ic")) {
-    scores.ic += 5;
-  }
-
-  if (answers.includes("data")) {
-    scores.analytics += 3;
-  }
-
-  if (answers.includes("lead") || answers.includes("cxo_int")) {
-    scores.cxo += 2;
-  }
-
-  // SORT TOP 3
   let top = Object.entries(scores)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
 
-  // PROGRAM DETAILS (ENHANCED)
   let details = {
 
     ai_product: {
-      name: "AI Product Development & Innovation",
+      name: "AI Product Development",
       why: [
-        "You showed strong interest in AI and product-focused thinking",
-        "Your profile aligns with building and scaling AI-driven solutions"
+        "Strong interest in AI and product thinking",
+        "Alignment with building AI-driven solutions"
       ],
       gain: [
         "End-to-end AI product lifecycle expertise",
-        "Ability to lead AI innovation initiatives",
-        "High-demand roles in tech-driven organizations"
+        "High-demand AI roles",
+        "Leadership in innovation"
       ]
     },
 
     cxo: {
-      name: "AI for Business Strategy / CXO Leadership",
+      name: "AI Business Strategy / CXO",
       why: [
-        "You show strong alignment with strategy and leadership roles",
-        "Your choices indicate decision-making and business impact focus"
+        "Strong leadership and strategic mindset",
+        "Focus on business transformation"
       ],
       gain: [
-        "Transition into enterprise leadership roles",
-        "Drive AI-led transformation in organizations",
-        "Strategic decision-making at scale"
+        "Enterprise leadership roles",
+        "Strategic decision-making",
+        "AI-driven transformation capability"
       ]
     },
 
     project: {
       name: "Strategic Project Management",
       why: [
-        "You prefer structured execution and delivery ownership",
-        "You align with managing complex business initiatives"
+        "Preference for structured execution",
+        "Interest in managing complex initiatives"
       ],
       gain: [
-        "Expertise in managing large-scale programs",
-        "Leadership in execution and governance",
-        "Cross-functional project ownership"
+        "Program leadership skills",
+        "Execution excellence",
+        "Cross-functional ownership"
       ]
     },
 
     finance: {
       name: "Finance Leadership with AI",
       why: [
-        "Your interest in finance and strategy stands out",
-        "You align with value creation and financial decision-making"
+        "Strong finance alignment",
+        "Interest in business value creation"
       ],
       gain: [
-        "Drive enterprise financial strategy",
-        "Leverage AI for financial insights",
-        "Move into leadership finance roles"
+        "Financial strategy leadership",
+        "AI-driven financial insights",
+        "Enterprise impact roles"
       ]
     },
 
     ic: {
-      name: "IC Design / Semiconductor Careers",
+      name: "IC Design / Semiconductor",
       why: [
-        "Strong technical inclination toward hardware and chip design",
-        "Interest aligns with deep engineering specialization"
+        "Strong technical inclination",
+        "Interest in hardware and chip design"
       ],
       gain: [
-        "High-demand semiconductor expertise",
-        "Core engineering roles in VLSI/IC design",
-        "Global career opportunities"
+        "Semiconductor expertise",
+        "Core engineering roles",
+        "Global opportunities"
       ]
     },
 
     analytics: {
       name: "Business Analytics & AI",
       why: [
-        "You show strong alignment with data-driven thinking",
-        "Your interests indicate analytical problem-solving ability"
+        "Data-driven mindset",
+        "Analytical thinking"
       ],
       gain: [
-        "Data-driven decision-making skills",
-        "Roles in analytics and AI strategy",
-        "Strong growth in data-centric careers"
+        "Analytics roles",
+        "AI strategy exposure",
+        "High-growth domain"
       ]
     }
   };
 
   let output = "";
 
-  top.forEach((item, index) => {
+  top.forEach((item, i) => {
 
     let d = details[item[0]];
-
     if (!d) return;
 
     output += `
       <div class="result-card">
-        <h3>#${index + 1} ${d.name}</h3>
+        <h3>#${i + 1} ${d.name}</h3>
 
         <h4>💡 Why this fits you</h4>
-        <ul>
-          ${d.why.map(w => `<li>${w}</li>`).join("")}
-        </ul>
+        <ul>${d.why.map(w => `<li>${w}</li>`).join("")}</ul>
 
         <h4>📈 What you gain</h4>
-        <ul>
-          ${d.gain.map(g => `<li>${g}</li>`).join("")}
-        </ul>
+        <ul>${d.gain.map(g => `<li>${g}</li>`).join("")}</ul>
       </div>
     `;
   });
