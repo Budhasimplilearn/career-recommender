@@ -1,80 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Career Path Recommender</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Career Path Recommender</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="container">
 
-  <!-- Progress -->
-  <div class="progress-bar">
-    <div id="progress"></div>
-  </div>
+<h1>Find Your Ideal Career Path</h1>
 
-  <!-- Step Container -->
-  <div id="app">
+<div class="progress-bar"><div id="progress"></div></div>
 
-    <!-- Step 1 -->
-    <div class="step active">
-      <h2>What is your current role?</h2>
-      <div class="grid">
-        <div class="card" onclick="select(this,'student')">🎓 Student</div>
-        <div class="card" onclick="select(this,'working')">💼 Working Professional</div>
-        <div class="card" onclick="select(this,'manager')">📊 Manager</div>
-        <div class="card" onclick="select(this,'leader')">👔 Senior Leader</div>
-      </div>
-    </div>
+<div id="app">
 
-    <!-- Step 2 -->
-    <div class="step">
-      <h2>Your background?</h2>
-      <div class="grid">
-        <div class="card" onclick="select(this,'tech')">💻 Tech</div>
-        <div class="card" onclick="select(this,'business')">📈 Business</div>
-        <div class="card" onclick="select(this,'finance')">💰 Finance</div>
-        <div class="card" onclick="select(this,'nontech')">🎨 Non-Tech</div>
-      </div>
-    </div>
+<!-- STEP 1 -->
+<div class="step active">
+<h2>Current Role</h2>
+<div class="grid">
+<div class="card" onclick="select(this,'student')">Student</div>
+<div class="card" onclick="select(this,'executive')">Executive</div>
+<div class="card" onclick="select(this,'manager')">Manager / Sr. Manager</div>
+<div class="card" onclick="select(this,'vp')">AVP / VP</div>
+<div class="card" onclick="select(this,'director')">Director</div>
+<div class="card" onclick="select(this,'cxo')">CXO</div>
+</div>
+</div>
 
-    <!-- Step 3 -->
-    <div class="step">
-      <h2>Your interests?</h2>
-      <div class="grid">
-        <div class="card" onclick="select(this,'ai')">🤖 AI</div>
-        <div class="card" onclick="select(this,'data')">📊 Data</div>
-        <div class="card" onclick="select(this,'product')">📦 Product</div>
-        <div class="card" onclick="select(this,'strategy')">🧠 Strategy</div>
-        <div class="card" onclick="select(this,'leadership')">👥 Leadership</div>
-      </div>
-    </div>
+<!-- STEP 2 -->
+<div class="step">
+<h2>Background</h2>
+<div class="grid">
+<div class="card" onclick="select(this,'tech')">Tech</div>
+<div class="card" onclick="select(this,'nontech')">Non-Tech</div>
+<div class="card" onclick="select(this,'hr')">HR</div>
+<div class="card" onclick="select(this,'finance')">Finance</div>
+<div class="card" onclick="select(this,'marketing')">Marketing</div>
+<div class="card" onclick="select(this,'operations')">Operations</div>
+<div class="card" onclick="select(this,'sales')">Sales</div>
+<div class="card" onclick="select(this,'other')">Others</div>
+</div>
+</div>
 
-    <!-- Step 4 -->
-    <div class="step">
-      <h2>What do you want next?</h2>
-      <div class="grid">
-        <div class="card" onclick="select(this,'growth')">🚀 Career Growth</div>
-        <div class="card" onclick="select(this,'switch')">🔄 Career Switch</div>
-        <div class="card" onclick="select(this,'highpay')">💸 High Pay</div>
-        <div class="card" onclick="select(this,'lead')">👔 Leadership Role</div>
-      </div>
-    </div>
+<!-- STEP 3 -->
+<div class="step">
+<h2>Experience</h2>
+<div class="grid">
+<div class="card" onclick="select(this,'0')">0</div>
+<div class="card" onclick="select(this,'1-2')">1–2</div>
+<div class="card" onclick="select(this,'3-5')">3–5</div>
+<div class="card" onclick="select(this,'5-7')">5–7</div>
+<div class="card" onclick="select(this,'8-10')">8–10</div>
+<div class="card" onclick="select(this,'10-12')">10–12</div>
+<div class="card" onclick="select(this,'13-15')">13–15</div>
+<div class="card" onclick="select(this,'15+')">15+</div>
+</div>
+</div>
 
-    <!-- Result -->
-    <div class="step" id="resultStep">
-      <h2>🎯 Your Top Matches</h2>
-      <div id="results"></div>
-    </div>
+<!-- STEP 4 -->
+<div class="step">
+<h2>Interests</h2>
+<div class="grid">
+<div class="card" onclick="select(this,'ai')">AI</div>
+<div class="card" onclick="select(this,'strategy')">Business Strategy</div>
+<div class="card" onclick="select(this,'ic')">IC Design</div>
+<div class="card" onclick="select(this,'finance_int')">Finance</div>
+<div class="card" onclick="select(this,'cxo_int')">Leadership/CXO</div>
+<div class="card" onclick="select(this,'product_dev')">Product Development</div>
+<div class="card" onclick="select(this,'product_mgmt')">Product Management</div>
+<div class="card" onclick="select(this,'project')">Project Management</div>
+</div>
+</div>
 
-  </div>
+<!-- STEP 5 -->
+<div class="step">
+<h2>What do you want next?</h2>
+<div class="grid">
+<div class="card" onclick="select(this,'growth')">Career Growth</div>
+<div class="card" onclick="select(this,'switch')">Career Switch</div>
+<div class="card" onclick="select(this,'highpay')">High Pay</div>
+<div class="card" onclick="select(this,'lead')">Leadership Role</div>
+<div class="card" onclick="select(this,'global')">Global Opportunities</div>
+<div class="card" onclick="select(this,'entrepreneur')">Entrepreneurship</div>
+</div>
+</div>
 
-  <!-- Navigation -->
-  <div class="nav">
-    <button onclick="prevStep()">Back</button>
-    <button onclick="nextStep()">Next</button>
-  </div>
+<!-- RESULT -->
+<div class="step">
+<h2>Top Recommendations</h2>
+<div id="results"></div>
+</div>
+
+</div>
+
+<div class="nav">
+<button onclick="prevStep()">Back</button>
+<button onclick="nextStep()">Next</button>
+</div>
 
 </div>
 
