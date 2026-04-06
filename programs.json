@@ -1,0 +1,211 @@
+{
+  "ai_product": {
+    "name": "AI-Powered Product Development & Innovation",
+    "program": "IIM Kozhikode",
+    "tags": ["ai", "product_mgmt", "innovation"],
+    "why": [
+      "You are aligned with AI, product thinking, and innovation-driven roles",
+      "You prefer building solutions rather than only analyzing or managing",
+      "You fit roles combining technology, business, and user experience"
+    ],
+    "gain": [
+      "End-to-end AI product lifecycle expertise",
+      "Hands-on experience with Generative AI and automation",
+      "Transition into AI Product Manager roles",
+      "Lead innovation-driven teams"
+    ],
+    "programDetails": [
+      "Full AI product lifecycle coverage",
+      "Capstone + real-world projects",
+      "AI product strategy and deployment focus"
+    ]
+  },
+
+  "ai_strategy": {
+    "name": "AI for Business Strategy",
+    "program": "IIM Kozhikode",
+    "tags": ["strategy", "ai", "lead"],
+    "why": [
+      "You show strong alignment with strategy and decision-making",
+      "You prefer influencing business outcomes over execution tasks",
+      "You are suited for transformation roles"
+    ],
+    "gain": [
+      "Lead AI-driven business transformation",
+      "Move into strategic leadership roles",
+      "Drive enterprise-level decision making"
+    ],
+    "programDetails": [
+      "AI strategy and governance",
+      "Case-based learning",
+      "Leadership-focused curriculum"
+    ]
+  },
+
+  "project": {
+    "name": "Strategic Project Management",
+    "program": "IIT Bombay",
+    "tags": ["project", "execution"],
+    "why": [
+      "You prefer structured execution and ownership",
+      "You align with managing complex initiatives",
+      "You fit coordination-heavy roles"
+    ],
+    "gain": [
+      "Lead large-scale programs",
+      "Develop risk and governance expertise",
+      "Drive execution across teams"
+    ],
+    "programDetails": [
+      "AI-driven decision-making",
+      "Project governance",
+      "Capstone projects"
+    ]
+  },
+
+  "ic": {
+    "name": "IC Design / Semiconductor Engineering",
+    "program": "IIT Bombay",
+    "tags": ["ic", "tech"],
+    "why": [
+      "Strong technical inclination",
+      "Interest in core engineering domains",
+      "Preference for specialization"
+    ],
+    "gain": [
+      "Semiconductor expertise",
+      "High-demand engineering roles",
+      "Deep technical specialization"
+    ],
+    "programDetails": [
+      "CMOS and IC design",
+      "Fabrication concepts",
+      "Advanced engineering curriculum"
+    ]
+  },
+
+  "analytics": {
+    "name": "Business Analytics & AI",
+    "program": "IIM Indore",
+    "tags": ["data", "ai"],
+    "why": [
+      "You are data-driven",
+      "You enjoy solving problems using insights",
+      "You align with analytics roles"
+    ],
+    "gain": [
+      "Analytics and AI roles",
+      "Data-driven decision-making",
+      "Strong career growth"
+    ],
+    "programDetails": [
+      "Machine learning basics",
+      "Business analytics tools",
+      "Case-based learning"
+    ]
+  },
+
+  "cxo": {
+    "name": "Advanced Business Strategies for CXOs",
+    "program": "XLRI",
+    "tags": ["cxo_int", "lead", "strategy"],
+    "why": [
+      "You show strong leadership mindset",
+      "You prefer enterprise-level thinking",
+      "You align with senior roles"
+    ],
+    "gain": [
+      "Move into CXO roles",
+      "Drive transformation initiatives",
+      "Lead business strategy"
+    ],
+    "programDetails": [
+      "Enterprise strategy",
+      "Cross-functional leadership",
+      "Transformation frameworks"
+    ]
+  },
+
+  "gm": {
+    "name": "Executive General Management Program",
+    "program": "IIM Indore",
+    "tags": ["strategy", "business"],
+    "why": [
+      "You want broad business understanding",
+      "You are transitioning roles",
+      "You prefer generalist growth"
+    ],
+    "gain": [
+      "Strong business foundation",
+      "Career flexibility",
+      "Leadership readiness"
+    ],
+    "programDetails": [
+      "Core business functions",
+      "Strategy and operations",
+      "Real-world projects"
+    ]
+  },
+
+  "product": {
+    "name": "Product Management Certification",
+    "program": "SP Jain",
+    "tags": ["product_mgmt"],
+    "why": [
+      "You are interested in product thinking",
+      "You align with building user-focused solutions",
+      "You prefer cross-functional roles"
+    ],
+    "gain": [
+      "Product management roles",
+      "User-centric design thinking",
+      "End-to-end product lifecycle"
+    ],
+    "programDetails": [
+      "Product strategy",
+      "Market fit",
+      "Lifecycle management"
+    ]
+  },
+
+  "finance": {
+    "name": "Finance Leadership with AI",
+    "program": "SP Jain",
+    "tags": ["finance", "finance_int"],
+    "why": [
+      "Strong alignment with finance and strategy",
+      "Interest in business value creation"
+    ],
+    "gain": [
+      "Finance leadership roles",
+      "AI-driven financial decisions",
+      "Enterprise impact"
+    ],
+    "programDetails": [
+      "Financial strategy",
+      "AI in finance",
+      "Case studies"
+    ]
+  },
+
+  "ai_leadership": {
+    "name": "AI-Augmented Leadership",
+    "program": "SP Jain",
+    "tags": ["ai", "lead"],
+    "why": [
+      "You want to combine AI with leadership",
+      "You align with modern management roles",
+      "You are future-focused"
+    ],
+    "gain": [
+      "Lead AI-driven teams",
+      "Enhance decision-making",
+      "Stay future-ready"
+    ],
+    "programDetails": [
+      "AI leadership frameworks",
+      "Decision-making tools",
+      "Strategic thinking"
+    ]
+  }
+}
