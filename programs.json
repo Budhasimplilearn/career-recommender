@@ -3,6 +3,11 @@
     "name": "AI-Powered Product Development & Innovation",
     "program": "IIM Kozhikode",
     "tags": ["ai", "product_mgmt", "innovation"],
+    "eligibility": {
+      "minExperience": 5,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You are aligned with AI, product thinking, and innovation-driven roles",
       "You prefer building solutions rather than only analyzing or managing",
@@ -25,6 +30,11 @@
     "name": "AI for Business Strategy",
     "program": "IIM Kozhikode",
     "tags": ["strategy", "ai", "lead"],
+    "eligibility": {
+      "minExperience": 5,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You show strong alignment with strategy and decision-making",
       "You prefer influencing business outcomes over execution tasks",
@@ -46,6 +56,11 @@
     "name": "Strategic Project Management",
     "program": "IIT Bombay",
     "tags": ["project", "execution"],
+    "eligibility": {
+      "minExperience": 5,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You prefer structured execution and ownership",
       "You align with managing complex initiatives",
@@ -67,6 +82,11 @@
     "name": "IC Design / Semiconductor Engineering",
     "program": "IIT Bombay",
     "tags": ["ic", "tech"],
+    "eligibility": {
+      "minExperience": 0,
+      "maxExperience": 100,
+      "education": "technical"
+    },
     "why": [
       "Strong technical inclination",
       "Interest in core engineering domains",
@@ -88,6 +108,11 @@
     "name": "Business Analytics & AI",
     "program": "IIM Indore",
     "tags": ["data", "ai"],
+    "eligibility": {
+      "minExperience": 2,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You are data-driven",
       "You enjoy solving problems using insights",
@@ -109,6 +134,11 @@
     "name": "Advanced Business Strategies for CXOs",
     "program": "XLRI",
     "tags": ["cxo_int", "lead", "strategy"],
+    "eligibility": {
+      "minExperience": 10,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You show strong leadership mindset",
       "You prefer enterprise-level thinking",
@@ -130,6 +160,11 @@
     "name": "Executive General Management Program",
     "program": "IIM Indore",
     "tags": ["strategy", "business"],
+    "eligibility": {
+      "minExperience": 2,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You want broad business understanding",
       "You are transitioning roles",
@@ -151,6 +186,11 @@
     "name": "AI Powered Product Management Certification",
     "program": "SP Jain",
     "tags": ["product_mgmt"],
+    "eligibility": {
+      "minExperience": 1,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You are interested in product thinking",
       "You align with building user-focused solutions",
@@ -172,6 +212,11 @@
     "name": "Finance Leadership with AI",
     "program": "SP Jain",
     "tags": ["finance", "finance_int"],
+    "eligibility": {
+      "minExperience": 7,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "Strong alignment with finance and strategy",
       "Interest in business value creation"
@@ -192,6 +237,11 @@
     "name": "AI-Augmented Leadership",
     "program": "SP Jain",
     "tags": ["ai", "lead"],
+    "eligibility": {
+      "minExperience": 8,
+      "maxExperience": 100,
+      "education": "graduate"
+    },
     "why": [
       "You want to combine AI with leadership",
       "You align with modern management roles",
