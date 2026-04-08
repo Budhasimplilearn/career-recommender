@@ -92,7 +92,6 @@ function generateResults() {
 
   let output = `<h2>🎯 Top Matches</h2>`;
 
-  // SHOW PROGRAMS ONLY
   eligible.slice(0, 3).forEach((item, index) => {
     let d = programs[item[0]];
     let confidence = Math.round((item[1] / maxScore) * 100);
@@ -113,7 +112,7 @@ function generateResults() {
     `;
   });
 
-  // ✅ ONLY ONE FORM
+  // FORM
   output += `
   <div class="result-card form-card">
     <h3>📋 Capture Customer Details</h3>
@@ -125,13 +124,13 @@ function generateResults() {
     <select id="course">
       <option value="">Select Course</option>
       <option>SP Jain Product Management</option>
-      <option>AI for Finance</option>
-      <option>AI Leadership</option>
+      <option>AI for Finance by SP Jain</option>
+      <option>AI Leadership by SP Jain</option>
       <option>IIT-B IC Design</option>
       <option>IIT-B Project Management</option>
-      <option>IIM-K AI Strategy</option>
-      <option>IIM-K AI Product</option>
-      <option>IIM-Indore Analytics</option>
+      <option>IIM-Kz AI Business Strategy</option>
+      <option>IIM-Kz AI Product Development</option>
+      <option>IIM-Indore Business Analytics</option>
       <option>IIM-Indore GM</option>
       <option>XLRI CXO</option>
     </select>
@@ -139,7 +138,7 @@ function generateResults() {
     <select id="interest">
       <option value="">Select Interest</option>
       <option>Pitched Cross Program</option>
-      <option>Re pitched same program</option>
+      <option>Re-pitched same program</option>
       <option>Not interested</option>
     </select>
 
@@ -151,19 +150,23 @@ function generateResults() {
   document.getElementById("results").innerHTML = output;
 }
 
-// SUBMIT
+// SUBMIT (FIXED)
 function submitData() {
 
-  const email = emailEl().value;
-  const phone = phoneEl().value;
-  const counsellor = counsellorEl().value;
+  const email = emailEl().value.trim();
+  const phone = phoneEl().value.trim();
+  const counsellor = counsellorEl().value.trim();
   const course = courseEl().value;
   const interest = interestEl().value;
+
+  const statusEl = document.getElementById("status");
 
   if (!email || !phone || !counsellor || !course || !interest) {
     alert("Fill all fields");
     return;
   }
+
+  statusEl.innerText = "⏳ Submitting...";
 
   const data = new URLSearchParams();
   data.append("email", email);
@@ -174,18 +177,35 @@ function submitData() {
 
   fetch("https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
     method: "POST",
-    mode: "no-cors",
     body: data
-  });
+  })
+  .then(res => res.text())
+  .then(res => {
+    if (res.toLowerCase().includes("success")) {
+      statusEl.innerText = "✅ Submitted successfully";
 
-  document.getElementById("status").innerText = "✅ Submitted";
+      // OPTIONAL: clear fields
+      emailEl().value = "";
+      phoneEl().value = "";
+      counsellorEl().value = "";
+      courseEl().value = "";
+      interestEl().value = "";
+    } else {
+      statusEl.innerText = "❌ Submission failed: " + res;
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    statusEl.innerText = "❌ Network error. Check console.";
+  });
 }
 
-// helpers
+// HELPERS
 const emailEl = () => document.getElementById("email");
 const phoneEl = () => document.getElementById("phone");
 const counsellorEl = () => document.getElementById("counsellor");
 const courseEl = () => document.getElementById("course");
 const interestEl = () => document.getElementById("interest");
 
+// INIT
 showStep(0);
