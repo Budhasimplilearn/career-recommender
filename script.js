@@ -246,6 +246,7 @@ function submitData() {
 
   fetch("https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
     method: "POST",
+    mode: "no-cors",   // ✅ IMPORTANT (add back)
     body: data
   })
   .then(() => {
@@ -255,7 +256,6 @@ function submitData() {
     document.getElementById("status").innerText = "❌ Submission failed";
   });
 }
-
 //
 // 🔹 INIT
 //
