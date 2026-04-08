@@ -347,8 +347,8 @@ function submitData() {
     email,
     phone,
     counsellor,
-    selected_course: course,
-    interest_status: interest,
+    course: course,
+    status: interest,
 
     role: profile.role,
     background: profile.background,
