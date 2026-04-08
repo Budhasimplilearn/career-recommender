@@ -150,7 +150,7 @@ function generateResults() {
   document.getElementById("results").innerHTML = output;
 }
 
-// SUBMIT (FIXED)
+// ✅ FINAL FIXED SUBMIT FUNCTION (NO CORS ISSUE)
 function submitData() {
 
   const email = emailEl().value.trim();
@@ -168,36 +168,35 @@ function submitData() {
 
   statusEl.innerText = "⏳ Submitting...";
 
-  const data = new URLSearchParams();
-  data.append("email", email);
-  data.append("phone", phone);
-  data.append("course", course);
-  data.append("counsellor", counsellor);
-  data.append("interest", interest);
-
-  fetch("https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
-    method: "POST",
-    body: data
-  })
-  .then(res => res.text())
-  .then(res => {
-    if (res.toLowerCase().includes("success")) {
-      statusEl.innerText = "✅ Submitted successfully";
-
-      // OPTIONAL: clear fields
-      emailEl().value = "";
-      phoneEl().value = "";
-      counsellorEl().value = "";
-      courseEl().value = "";
-      interestEl().value = "";
-    } else {
-      statusEl.innerText = "❌ Submission failed: " + res;
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    statusEl.innerText = "❌ Network error. Check console.";
+  const params = new URLSearchParams({
+    email,
+    phone,
+    course,
+    counsellor,
+    interest
   });
+
+  const url = "https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec?" + params.toString();
+
+  fetch(url)
+    .then(res => res.text())
+    .then(res => {
+      if (res.toLowerCase().includes("success")) {
+        statusEl.innerText = "✅ Submitted successfully";
+
+        emailEl().value = "";
+        phoneEl().value = "";
+        counsellorEl().value = "";
+        courseEl().value = "";
+        interestEl().value = "";
+      } else {
+        statusEl.innerText = "❌ " + res;
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      statusEl.innerText = "❌ Network error";
+    });
 }
 
 // HELPERS
