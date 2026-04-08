@@ -176,7 +176,7 @@ function submitData() {
     interest
   });
 
-  const url = "https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec?" + params.toString();
+  const url = "https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec" + params.toString();
 
   fetch(url)
     .then(res => res.text())
