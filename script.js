@@ -4,23 +4,14 @@ let programs = {};
 
 const steps = document.querySelectorAll(".step");
 
-//
-// 🔹 LOAD JSON
-//
+// LOAD JSON
 fetch("./programs.json")
   .then(res => res.json())
-  .then(data => {
-    programs = data;
-  })
-  .catch(err => console.error("JSON load error:", err));
+  .then(data => programs = data);
 
-//
-// 🔹 SHOW STEP
-//
+// STEP CONTROL
 function showStep(index) {
-  steps.forEach((step, i) => {
-    step.classList.toggle("active", i === index);
-  });
+  steps.forEach((step, i) => step.classList.toggle("active", i === index));
 
   const progress = document.getElementById("progress");
   if (progress) {
@@ -28,24 +19,16 @@ function showStep(index) {
   }
 }
 
-//
-// 🔹 SELECT OPTION
-//
 function select(el, val) {
   const cards = el.parentElement.querySelectorAll(".card");
   cards.forEach(c => c.classList.remove("selected"));
   el.classList.add("selected");
-
   answers[currentStep] = val;
 }
 
-//
-// 🔹 NEXT STEP
-//
 function nextStep() {
-
   if (!answers[currentStep]) {
-    alert("Please select an option before continuing.");
+    alert("Please select an option");
     return;
   }
 
@@ -57,9 +40,6 @@ function nextStep() {
   showStep(currentStep);
 }
 
-//
-// 🔹 PREVIOUS STEP
-//
 function prevStep() {
   if (currentStep > 0) {
     currentStep--;
@@ -67,156 +47,101 @@ function prevStep() {
   }
 }
 
-//
-// 🔹 EXPERIENCE CONVERSION
-//
+// EXPERIENCE
 function getExperienceValue(exp) {
-  if (exp === "0") return 0;
-  if (exp === "1-2") return 2;
-  if (exp === "3-5") return 5;
-  if (exp === "5-7") return 7;
-  if (exp === "8-10") return 10;
-  if (exp === "10-12") return 12;
-  if (exp === "13-15") return 15;
-  if (exp === "15+") return 20;
-  return 0;
+  return {
+    "0": 0, "1-2": 2, "3-5": 5, "5-7": 7,
+    "8-10": 10, "10-12": 12, "13-15": 15, "15+": 20
+  }[exp] || 0;
 }
 
-//
-// 🔹 ELIGIBILITY CHECK
-//
+// ELIGIBILITY
 function checkEligibility(program) {
   let exp = getExperienceValue(answers[2]);
-  let rules = program.eligibility;
-
-  if (!rules) return true;
-
-  return exp >= rules.minExperience && exp <= rules.maxExperience;
+  let r = program.eligibility;
+  if (!r) return true;
+  return exp >= r.minExperience && exp <= r.maxExperience;
 }
 
-//
-// 🔹 SCORING ENGINE
-//
+// SCORING
 function calculateScore(program) {
   let score = 0;
-
   program.tags.forEach(tag => {
-    if (answers.includes(tag)) {
-      score += 2;
-    }
+    if (answers.includes(tag)) score += 2;
   });
-
   return score;
 }
 
-//
-// 🔹 GENERATE RESULTS
-//
+// RESULTS
 function generateResults() {
 
   let eligible = [];
   let stretch = [];
 
   Object.keys(programs).forEach(key => {
-
-    let program = programs[key];
-    let score = calculateScore(program);
-
-    if (checkEligibility(program)) {
-      eligible.push([key, score]);
-    } else {
-      stretch.push([key, score]);
-    }
-
+    let score = calculateScore(programs[key]);
+    checkEligibility(programs[key])
+      ? eligible.push([key, score])
+      : stretch.push([key, score]);
   });
 
   eligible.sort((a, b) => b[1] - a[1]);
   stretch.sort((a, b) => b[1] - a[1]);
 
-  let topEligible = eligible.slice(0, 3);
-  let topStretch = stretch.slice(0, 2);
-
   let maxScore = Math.max(...eligible.map(x => x[1]), 1);
 
-  let output = "";
+  let output = `<h2>🎯 Top Matches</h2>`;
 
-  output += `<h2>🎯 Top Matches (Eligible)</h2>`;
-
-  topEligible.forEach((item, index) => {
-
+  // SHOW PROGRAMS ONLY
+  eligible.slice(0, 3).forEach((item, index) => {
     let d = programs[item[0]];
     let confidence = Math.round((item[1] / maxScore) * 100);
 
     output += `
-<div class="result-card" style="margin-top:30px;">
-  <h3>📋 Capture Customer Details</h3>
+    <div class="result-card">
+      ${index === 0 ? `<div class="badge">⭐ Best Match</div>` : ""}
+      <h3>${d.name}</h3>
+      <p>${d.program}</p>
+      <p><b>${confidence}% Match</b></p>
 
-  <input id="email" placeholder="Email">
-  <input id="phone" placeholder="Phone Number">
-  <input id="counsellor" placeholder="Counsellor Name">
+      <h4>Why this fits</h4>
+      <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
 
-  <select id="course">
-    <option value="">Select Course Pitched</option>
-    ...
-  </select>
-
-  <select id="interest">
-    <option value="">Select Interest Outcome</option>
-    ...
-  </select>
-
-  <button onclick="submitData()">Submit</button>
-
-  <p id="status"></p>
-</div>
+      <h4>What you gain</h4>
+      <ul>${d.gain.map(x => `<li>${x}</li>`).join("")}</ul>
+    </div>
     `;
   });
 
-  if (topStretch.length > 0) {
-
-    output += `<h2>⚠️ Stretch Options</h2>`;
-
-    topStretch.forEach(item => {
-      let d = programs[item[0]];
-
-      output += `
-      <div class="result-card">
-        <h3>${d.name}</h3>
-        <p>Not eligible yet</p>
-      </div>
-      `;
-    });
-  }
-
-  // ✅ FINAL FORM (UPDATED)
+  // ✅ ONLY ONE FORM
   output += `
-  <div class="result-card">
+  <div class="result-card form-card">
     <h3>📋 Capture Customer Details</h3>
 
-    <input id="email" placeholder="Email"><br><br>
-    <input id="phone" placeholder="Phone"><br><br>
-    <input id="counsellor" placeholder="Counsellor"><br><br>
+    <input id="email" placeholder="Email">
+    <input id="phone" placeholder="Phone">
+    <input id="counsellor" placeholder="Counsellor">
 
     <select id="course">
       <option value="">Select Course</option>
-      <option>SP Jain Product Management by SP Jain</option>
-      <option>AI for Finance by SP Jain</option>
-      <option>AI Augmented Leadership By SP Jain</option>
+      <option>SP Jain Product Management</option>
+      <option>AI for Finance</option>
+      <option>AI Leadership</option>
       <option>IIT-B IC Design</option>
-      <option>IIT-B Strategic Project Management</option>
-      <option>IIM-K AI for Business Strategy</option>
-      <option>IIM-K AI for Product Development & Innovation</option>
-      <option>IIM-Indore Business Analytics</option>
+      <option>IIT-B Project Management</option>
+      <option>IIM-K AI Strategy</option>
+      <option>IIM-K AI Product</option>
+      <option>IIM-Indore Analytics</option>
       <option>IIM-Indore GM</option>
       <option>XLRI CXO</option>
-    </select><br><br>
+    </select>
 
     <select id="interest">
       <option value="">Select Interest</option>
       <option>Pitched Cross Program</option>
       <option>Re pitched same program</option>
-      <option>Not interested for any program</option>
-    </select><br><br>
+      <option>Not interested</option>
+    </select>
 
     <button onclick="submitData()">Submit</button>
     <p id="status"></p>
@@ -226,19 +151,17 @@ function generateResults() {
   document.getElementById("results").innerHTML = output;
 }
 
-//
-// 🔹 FINAL FIXED SUBMIT FUNCTION
-//
+// SUBMIT
 function submitData() {
 
-  const email = document.getElementById("email").value;
-  const phone = document.getElementById("phone").value;
-  const counsellor = document.getElementById("counsellor").value;
-  const course = document.getElementById("course").value;
-  const interest = document.getElementById("interest").value;
+  const email = emailEl().value;
+  const phone = phoneEl().value;
+  const counsellor = counsellorEl().value;
+  const course = courseEl().value;
+  const interest = interestEl().value;
 
   if (!email || !phone || !counsellor || !course || !interest) {
-    alert("Please fill all fields");
+    alert("Fill all fields");
     return;
   }
 
@@ -251,17 +174,18 @@ function submitData() {
 
   fetch("https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
     method: "POST",
-    mode: "no-cors",   // ✅ IMPORTANT (add back)
+    mode: "no-cors",
     body: data
-  })
-  .then(() => {
-    document.getElementById("status").innerText = "✅ Submitted successfully!";
-  })
-  .catch(() => {
-    document.getElementById("status").innerText = "❌ Submission failed";
   });
+
+  document.getElementById("status").innerText = "✅ Submitted";
 }
-//
-// 🔹 INIT
-//
+
+// helpers
+const emailEl = () => document.getElementById("email");
+const phoneEl = () => document.getElementById("phone");
+const counsellorEl = () => document.getElementById("counsellor");
+const courseEl = () => document.getElementById("course");
+const interestEl = () => document.getElementById("interest");
+
 showStep(0);
