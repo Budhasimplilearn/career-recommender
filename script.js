@@ -1,11 +1,13 @@
 let currentStep = 0;
 let answers = [];
 let programs = {};
-let topCourse = ""; // for Google Sheet
+let topCourse = "";
 
 const steps = document.querySelectorAll(".step");
 
-// LOAD JSON
+//
+// 🔹 LOAD JSON
+//
 fetch("./programs.json")
   .then(res => res.json())
   .then(data => {
@@ -13,7 +15,9 @@ fetch("./programs.json")
   })
   .catch(err => console.error("JSON load error:", err));
 
-// SHOW STEP
+//
+// 🔹 SHOW STEP
+//
 function showStep(index) {
   steps.forEach((step, i) => {
     step.classList.toggle("active", i === index);
@@ -25,7 +29,9 @@ function showStep(index) {
   }
 }
 
-// SELECT
+//
+// 🔹 SELECT OPTION
+//
 function select(el, val) {
   const cards = el.parentElement.querySelectorAll(".card");
   cards.forEach(c => c.classList.remove("selected"));
@@ -34,7 +40,9 @@ function select(el, val) {
   answers[currentStep] = val;
 }
 
-// NEXT
+//
+// 🔹 NEXT STEP
+//
 function nextStep() {
 
   if (!answers[currentStep]) {
@@ -50,7 +58,9 @@ function nextStep() {
   showStep(currentStep);
 }
 
-// BACK
+//
+// 🔹 PREVIOUS STEP
+//
 function prevStep() {
   if (currentStep > 0) {
     currentStep--;
@@ -74,11 +84,10 @@ function getExperienceValue(exp) {
 }
 
 //
-// 🔹 ELIGIBILITY
+// 🔹 ELIGIBILITY CHECK
 //
 function checkEligibility(program) {
-
-  let exp = getExperienceValue(answers[2]); // experience step
+  let exp = getExperienceValue(answers[2]);
   let rules = program.eligibility;
 
   if (!rules) return true;
@@ -87,7 +96,7 @@ function checkEligibility(program) {
 }
 
 //
-// 🔹 SCORING
+// 🔹 SCORING ENGINE
 //
 function calculateScore(program) {
   let score = 0;
@@ -133,7 +142,9 @@ function generateResults() {
 
   let output = "";
 
-  // ✅ ELIGIBLE
+  //
+  // ✅ ELIGIBLE RESULTS
+  //
   output += `<h2>🎯 Top Matches (Eligible)</h2>`;
 
   topEligible.forEach((item, index) => {
@@ -142,7 +153,7 @@ function generateResults() {
     let confidence = Math.round((item[1] / maxScore) * 100);
 
     if (index === 0) {
-      topCourse = d.name; // store for sheet
+      topCourse = d.name;
     }
 
     output += `
@@ -173,13 +184,15 @@ function generateResults() {
     `;
   });
 
-  // ⚠️ STRETCH
+  //
+  // ⚠️ STRETCH PROGRAMS
+  //
   if (topStretch.length > 0) {
 
     output += `
     <h2 style="margin-top:30px;">⚠️ Stretch Options (Future Fit)</h2>
     <p style="color:#facc15;">
-    These programs are strong fits but need more experience.
+    These programs are strong fits but require more experience.
     </p>`;
 
     topStretch.forEach(item => {
@@ -204,7 +217,9 @@ function generateResults() {
     });
   }
 
-  // 🔽 FORM (IMPORTANT ADDITION)
+  //
+  // 📋 LEAD FORM
+  //
   output += `
   <div class="result-card" style="margin-top:30px;">
     <h3>📋 Capture Customer Details</h3>
@@ -223,7 +238,7 @@ function generateResults() {
 }
 
 //
-// 🔹 GOOGLE SHEET SUBMIT
+// 🔹 SUBMIT TO GOOGLE SHEETS (FINAL FIXED)
 //
 function submitData() {
 
@@ -236,8 +251,12 @@ function submitData() {
     return;
   }
 
-  fetch("https://script.google.com/a/macros/simplilearn.net/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
     method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       email: email,
       phone: phone,
@@ -245,7 +264,6 @@ function submitData() {
       counsellor: counsellor
     })
   })
-  .then(res => res.text())
   .then(() => {
     document.getElementById("status").innerText = "✅ Submitted successfully!";
   })
@@ -254,5 +272,7 @@ function submitData() {
   });
 }
 
-// INIT
+//
+// 🔹 INIT
+//
 showStep(0);
