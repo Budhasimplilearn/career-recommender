@@ -4,12 +4,16 @@ let programs = {};
 
 const steps = document.querySelectorAll(".step");
 
-// LOAD JSON
+// =====================
+// LOAD DATA
+// =====================
 fetch("./programs.json")
   .then(res => res.json())
   .then(data => programs = data);
 
+// =====================
 // STEP CONTROL
+// =====================
 function showStep(index) {
   steps.forEach((step, i) => step.classList.toggle("active", i === index));
 
@@ -47,7 +51,9 @@ function prevStep() {
   }
 }
 
+// =====================
 // EXPERIENCE
+// =====================
 function getExperienceValue(exp) {
   return {
     "0": 0, "1-2": 2, "3-5": 5, "5-7": 7,
@@ -55,63 +61,228 @@ function getExperienceValue(exp) {
   }[exp] || 0;
 }
 
-// ELIGIBILITY
-function checkEligibility(program) {
-  let exp = getExperienceValue(answers[2]);
-  let r = program.eligibility;
-  if (!r) return true;
-  return exp >= r.minExperience && exp <= r.maxExperience;
+function getCareerStage(expVal) {
+  if (expVal <= 3) return "early";
+  if (expVal <= 10) return "mid";
+  return "senior";
 }
 
-// SCORING
-function calculateScore(program) {
+// =====================
+// ELIGIBILITY
+// =====================
+function checkEligibility(program) {
+  const exp = getExperienceValue(answers[2]);
+  const background = answers[1];
+
+  const r = program.eligibility;
+  if (!r) return true;
+
+  if (exp < r.minExperience || exp > r.maxExperience) return false;
+
+  if (r.education === "technical" && background !== "tech") return false;
+
+  return true;
+}
+
+// =====================
+// USER PROFILE
+// =====================
+function getUserProfile() {
+  const expVal = getExperienceValue(answers[2]);
+
+  return {
+    role: answers[0],
+    background: answers[1],
+    experience: answers[2],
+    expVal,
+    stage: getCareerStage(expVal),
+    interest: answers[3],
+    goal: answers[4]
+  };
+}
+
+// =====================
+// WEIGHTS
+// =====================
+const WEIGHTS = {
+  interest: 5,
+  goal: 4,
+  careerFit: 5,
+  persona: 3,
+  transition: 3,
+  penalty: -4
+};
+
+// =====================
+// PERSONA
+// =====================
+function getUserPersona(profile) {
+  const interest = profile.interest;
+
+  if (["product_mgmt", "product_dev", "ic"].includes(interest)) return "builder";
+  if (["data", "finance_int"].includes(interest)) return "analyst";
+  if (["project"].includes(interest)) return "operator";
+  if (["strategy", "cxo_int", "lead"].includes(interest)) return "leader";
+
+  return "generalist";
+}
+
+// =====================
+// TRANSITION
+// =====================
+function getUserTransition(profile) {
+  if (profile.goal === "switch") return "switch";
+  if (profile.goal === "lead") return "accelerate";
+  if (profile.goal === "growth") return "upskill";
+  return "upskill";
+}
+
+// =====================
+// SCORING ENGINE
+// =====================
+function calculateScore(program, profile) {
   let score = 0;
-  program.tags.forEach(tag => {
-    if (answers.includes(tag)) score += 2;
-  });
+
+  if (program.tags.includes(profile.interest)) {
+    score += WEIGHTS.interest;
+  }
+
+  if (program.tags.includes(profile.goal)) {
+    score += WEIGHTS.goal;
+  }
+
+  if (program.careerFit && program.careerFit[profile.stage]) {
+    score += program.careerFit[profile.stage] * WEIGHTS.careerFit;
+  }
+
+  if (program.persona === getUserPersona(profile)) {
+    score += WEIGHTS.persona;
+  }
+
+  if (program.transition && program.transition.includes(getUserTransition(profile))) {
+    score += WEIGHTS.transition;
+  }
+
+  if (profile.interest === "ai" && !program.tags.includes("ai")) {
+    score += WEIGHTS.penalty;
+  }
+
   return score;
 }
 
-// RESULTS
+// =====================
+// SMART SELECTION
+// =====================
+function pickTopPrograms(sorted) {
+  const best = sorted[0];
+
+  const safe = sorted.find(p =>
+    p !== best && p.score >= best.score * 0.75
+  );
+
+  const stretch = sorted.find(p =>
+    p.score < best.score * 0.75
+  );
+
+  return [best, safe || sorted[1], stretch || sorted[2]];
+}
+
+// =====================
+// WHY GENERATOR
+// =====================
+function generateWhy(program, profile) {
+  const reasons = [];
+
+  if (program.tags.includes(profile.interest)) {
+    reasons.push(`Strong match with your interest in ${profile.interest}`);
+  }
+
+  if (program.persona === getUserPersona(profile)) {
+    reasons.push(`Fits your career style (${program.persona})`);
+  }
+
+  if (program.transition.includes(getUserTransition(profile))) {
+    reasons.push(`Aligned with your goal of ${profile.goal}`);
+  }
+
+  if (program.tags.includes("ai")) {
+    reasons.push("Positions you strongly for AI-driven roles");
+  }
+
+  return reasons;
+}
+
+// =====================
+// RESULTS ENGINE
+// =====================
 function generateResults() {
 
-  let eligible = [];
-  let stretch = [];
+  const profile = getUserProfile();
+
+  let evaluated = [];
 
   Object.keys(programs).forEach(key => {
-    let score = calculateScore(programs[key]);
-    checkEligibility(programs[key])
-      ? eligible.push([key, score])
-      : stretch.push([key, score]);
+    const program = programs[key];
+
+    if (!checkEligibility(program)) return;
+
+    const score = calculateScore(program, profile);
+
+    evaluated.push({
+      key,
+      score,
+      data: program
+    });
   });
 
-  eligible.sort((a, b) => b[1] - a[1]);
+  evaluated.sort((a, b) => b.score - a.score);
 
-  let maxScore = Math.max(...eligible.map(x => x[1]), 1);
+  const selected = pickTopPrograms(evaluated);
 
-  let output = `<h2>🎯 Top Matches</h2>`;
+  // 🔥 STORE FOR GOOGLE SHEET
+  window.lastRecommendations = selected.map(x => x.data);
 
-  eligible.slice(0, 3).forEach((item, index) => {
-    let d = programs[item[0]];
-    let confidence = Math.round((item[1] / maxScore) * 100);
+  const maxScore = Math.max(...evaluated.map(x => x.score), 1);
+
+  let output = `<h2>🎯 Your Career Matches</h2>`;
+
+  selected.forEach((item, index) => {
+    if (!item) return;
+
+    const d = item.data;
+    const confidence = Math.round((item.score / maxScore) * 100);
+
+    const label =
+      index === 0 ? "⭐ Best Fit" :
+      index === 1 ? "✅ Safe Option" :
+      "🚀 Stretch Option";
+
+    const reasons = generateWhy(d, profile);
 
     output += `
-    <div class="result-card">
-      ${index === 0 ? `<div class="badge">⭐ Best Match</div>` : ""}
-      <h3>${d.name}</h3>
-      <p>${d.program}</p>
-      <p><b>${confidence}% Match</b></p>
+      <div class="result-card">
+        <div class="badge">${label}</div>
 
-      <h4>Why this fits</h4>
-      <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
+        <h3>${d.name}</h3>
+        <p>${d.program}</p>
+        <p><b>${confidence}% Match</b></p>
 
-      <h4>What you gain</h4>
-      <ul>${d.gain.map(x => `<li>${x}</li>`).join("")}</ul>
-    </div>
+        <h4>Why this fits you</h4>
+        <ul>
+          ${reasons.map(r => `<li>${r}</li>`).join("")}
+        </ul>
+
+        <h4>What you gain</h4>
+        <ul>
+          ${d.gain.map(g => `<li>${g}</li>`).join("")}
+        </ul>
+      </div>
     `;
   });
 
-  // FORM
+  // =====================
+  // FORM (UNCHANGED UI)
+  // =====================
   output += `
   <div class="result-card form-card">
     <h3>📋 Capture Customer Details</h3>
@@ -149,7 +320,9 @@ function generateResults() {
   document.getElementById("results").innerHTML = output;
 }
 
-// ✅ FIXED SUBMIT FUNCTION
+// =====================
+// GOOGLE SHEET SUBMIT
+// =====================
 function submitData() {
 
   const email = emailEl().value.trim();
@@ -167,15 +340,28 @@ function submitData() {
 
   statusEl.innerText = "⏳ Submitting...";
 
+  const profile = getUserProfile();
+  const recommendations = window.lastRecommendations || [];
+
   const params = new URLSearchParams({
     email,
     phone,
-    course,
     counsellor,
-    interest
+    selected_course: course,
+    interest_status: interest,
+
+    role: profile.role,
+    background: profile.background,
+    experience: profile.experience,
+    interest_area: profile.interest,
+    goal: profile.goal,
+
+    rec1: recommendations[0]?.name || "",
+    rec2: recommendations[1]?.name || "",
+    rec3: recommendations[2]?.name || "",
+    best_match: recommendations[0]?.name || ""
   });
 
-  // ✅ YOUR CORRECT URL (FIXED WITH ?)
   const url = "https://script.google.com/macros/s/AKfycbxnrlbzpnwUkBHdeMPApzuyH0lpIhTd_6MHrmjKYHOY77ZbhFDwtlXDly43THguLXxI/exec?" + params.toString();
 
   fetch(url)
@@ -199,12 +385,16 @@ function submitData() {
     });
 }
 
+// =====================
 // HELPERS
+// =====================
 const emailEl = () => document.getElementById("email");
 const phoneEl = () => document.getElementById("phone");
 const counsellorEl = () => document.getElementById("counsellor");
 const courseEl = () => document.getElementById("course");
 const interestEl = () => document.getElementById("interest");
 
+// =====================
 // INIT
+// =====================
 showStep(0);
