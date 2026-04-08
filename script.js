@@ -140,9 +140,6 @@ function generateResults() {
 
   let output = "";
 
-  //
-  // ✅ ELIGIBLE
-  //
   output += `<h2>🎯 Top Matches (Eligible)</h2>`;
 
   topEligible.forEach((item, index) => {
@@ -152,18 +149,11 @@ function generateResults() {
 
     output += `
     <div class="result-card">
-
       ${index === 0 ? `<div class="badge">⭐ Best Match</div>` : ""}
-
       <h3>#${index + 1} ${d.name}</h3>
       <p><b>🎓 Program:</b> ${d.program}</p>
 
-      <div class="progress-container">
-        <p><b>Match Score: ${confidence}%</b></p>
-        <div class="progress-bar-inner">
-          <div class="progress-fill" style="width:${confidence}%"></div>
-        </div>
-      </div>
+      <p><b>Match Score: ${confidence}%</b></p>
 
       <h4>💡 Why this fits you</h4>
       <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
@@ -173,78 +163,57 @@ function generateResults() {
 
       <h4>📚 Program Highlights</h4>
       <ul>${d.programDetails.map(x => `<li>${x}</li>`).join("")}</ul>
-
     </div>
     `;
   });
 
-  //
-  // ⚠️ STRETCH
-  //
   if (topStretch.length > 0) {
 
-    output += `
-    <h2 style="margin-top:30px;">⚠️ Stretch Options (Future Fit)</h2>
-    <p style="color:#facc15;">
-    These programs are strong fits but require more experience.
-    </p>`;
+    output += `<h2>⚠️ Stretch Options</h2>`;
 
     topStretch.forEach(item => {
-
       let d = programs[item[0]];
 
       output += `
       <div class="result-card">
-
         <h3>${d.name}</h3>
-        <p><b>🎓 Program:</b> ${d.program}</p>
-
-        <p style="color:#f87171;">
-        Not eligible yet based on experience
-        </p>
-
-        <h4>💡 Why this is a future fit</h4>
-        <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
-
+        <p>Not eligible yet</p>
       </div>
       `;
     });
   }
 
-  //
-  // 📋 FINAL FORM (UPDATED)
-  //
+  // ✅ FINAL FORM (UPDATED)
   output += `
-  <div class="result-card" style="margin-top:30px;">
+  <div class="result-card">
     <h3>📋 Capture Customer Details</h3>
 
-    <input id="email" placeholder="Email" style="width:100%;margin:10px 0;padding:10px;">
-    <input id="phone" placeholder="Phone Number" style="width:100%;margin:10px 0;padding:10px;">
-    <input id="counsellor" placeholder="Counsellor Name" style="width:100%;margin:10px 0;padding:10px;">
+    <input id="email" placeholder="Email"><br><br>
+    <input id="phone" placeholder="Phone"><br><br>
+    <input id="counsellor" placeholder="Counsellor"><br><br>
 
-    <select id="course" style="width:100%;margin:10px 0;padding:10px;">
-      <option value="">Select Course Pitched</option>
+    <select id="course">
+      <option value="">Select Course</option>
       <option>SP Jain Product Management by SP Jain</option>
       <option>AI for Finance by SP Jain</option>
       <option>AI Augmented Leadership By SP Jain</option>
-      <option>e Post Graduate Diploma in IC Design in Practice by IIT-B</option>
-      <option>Certificate Course in Strategic Project Mgt by IIT-B</option>
-      <option>AI for Business Strategy by IIM-K</option>
-      <option>AI Product Development and innovation by IIM-K</option>
-      <option>Business Analytics and AI for Managers by IIM-Indore</option>
-      <option>Executive program in General Management by IIM Indore</option>
-      <option>Exec Diploma for CXO by XLRI</option>
-    </select>
+      <option>IIT-B IC Design</option>
+      <option>IIT-B Project Management</option>
+      <option>IIM-K AI Strategy</option>
+      <option>IIM-K AI Product</option>
+      <option>IIM-Indore Analytics</option>
+      <option>IIM-Indore GM</option>
+      <option>XLRI CXO</option>
+    </select><br><br>
 
-    <select id="interest" style="width:100%;margin:10px 0;padding:10px;">
-      <option value="">Select Interest Outcome</option>
+    <select id="interest">
+      <option value="">Select Interest</option>
       <option>Pitched Cross Program</option>
       <option>Re pitched same program</option>
       <option>Not interested for any program</option>
-    </select>
+    </select><br><br>
 
     <button onclick="submitData()">Submit</button>
-
     <p id="status"></p>
   </div>
   `;
@@ -253,7 +222,7 @@ function generateResults() {
 }
 
 //
-// 🔹 SUBMIT FUNCTION (FINAL)
+// 🔹 FINAL FIXED SUBMIT FUNCTION
 //
 function submitData() {
 
@@ -268,19 +237,16 @@ function submitData() {
     return;
   }
 
+  const data = new URLSearchParams();
+  data.append("email", email);
+  data.append("phone", phone);
+  data.append("course", course);
+  data.append("counsellor", counsellor);
+  data.append("interest", interest);
+
   fetch("https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
     method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email,
-      phone,
-      course,
-      counsellor,
-      interest
-    })
+    body: data
   })
   .then(() => {
     document.getElementById("status").innerText = "✅ Submitted successfully!";
