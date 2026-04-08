@@ -236,7 +236,7 @@ function submitData() {
     return;
   }
 
-  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+  fetch("https://script.google.com/a/macros/simplilearn.net/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec", {
     method: "POST",
     body: JSON.stringify({
       email: email,
