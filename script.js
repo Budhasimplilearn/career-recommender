@@ -1,7 +1,6 @@
 let currentStep = 0;
 let answers = [];
 let programs = {};
-let topCourse = "";
 
 const steps = document.querySelectorAll(".step");
 
@@ -131,7 +130,6 @@ function generateResults() {
 
   });
 
-  // sort
   eligible.sort((a, b) => b[1] - a[1]);
   stretch.sort((a, b) => b[1] - a[1]);
 
@@ -143,7 +141,7 @@ function generateResults() {
   let output = "";
 
   //
-  // ✅ ELIGIBLE RESULTS
+  // ✅ ELIGIBLE
   //
   output += `<h2>🎯 Top Matches (Eligible)</h2>`;
 
@@ -151,10 +149,6 @@ function generateResults() {
 
     let d = programs[item[0]];
     let confidence = Math.round((item[1] / maxScore) * 100);
-
-    if (index === 0) {
-      topCourse = d.name;
-    }
 
     output += `
     <div class="result-card">
@@ -185,7 +179,7 @@ function generateResults() {
   });
 
   //
-  // ⚠️ STRETCH PROGRAMS
+  // ⚠️ STRETCH
   //
   if (topStretch.length > 0) {
 
@@ -218,7 +212,7 @@ function generateResults() {
   }
 
   //
-  // 📋 LEAD FORM
+  // 📋 FINAL FORM (UPDATED)
   //
   output += `
   <div class="result-card" style="margin-top:30px;">
@@ -227,6 +221,27 @@ function generateResults() {
     <input id="email" placeholder="Email" style="width:100%;margin:10px 0;padding:10px;">
     <input id="phone" placeholder="Phone Number" style="width:100%;margin:10px 0;padding:10px;">
     <input id="counsellor" placeholder="Counsellor Name" style="width:100%;margin:10px 0;padding:10px;">
+
+    <select id="course" style="width:100%;margin:10px 0;padding:10px;">
+      <option value="">Select Course Pitched</option>
+      <option>SP Jain Product Management by SP Jain</option>
+      <option>AI for Finance by SP Jain</option>
+      <option>AI Augmented Leadership By SP Jain</option>
+      <option>e Post Graduate Diploma in IC Design in Practice by IIT-B</option>
+      <option>Certificate Course in Strategic Project Mgt by IIT-B</option>
+      <option>AI for Business Strategy by IIM-K</option>
+      <option>AI Product Development and innovation by IIM-K</option>
+      <option>Business Analytics and AI for Managers by IIM-Indore</option>
+      <option>Executive program in General Management by IIM Indore</option>
+      <option>Exec Diploma for CXO by XLRI</option>
+    </select>
+
+    <select id="interest" style="width:100%;margin:10px 0;padding:10px;">
+      <option value="">Select Interest Outcome</option>
+      <option>Pitched Cross Program</option>
+      <option>Re pitched same program</option>
+      <option>Not interested for any program</option>
+    </select>
 
     <button onclick="submitData()">Submit</button>
 
@@ -238,15 +253,17 @@ function generateResults() {
 }
 
 //
-// 🔹 SUBMIT TO GOOGLE SHEETS (FINAL FIXED)
+// 🔹 SUBMIT FUNCTION (FINAL)
 //
 function submitData() {
 
   const email = document.getElementById("email").value;
   const phone = document.getElementById("phone").value;
   const counsellor = document.getElementById("counsellor").value;
+  const course = document.getElementById("course").value;
+  const interest = document.getElementById("interest").value;
 
-  if (!email || !phone || !counsellor) {
+  if (!email || !phone || !counsellor || !course || !interest) {
     alert("Please fill all fields");
     return;
   }
@@ -258,10 +275,11 @@ function submitData() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      email: email,
-      phone: phone,
-      course: topCourse,
-      counsellor: counsellor
+      email,
+      phone,
+      course,
+      counsellor,
+      interest
     })
   })
   .then(() => {
