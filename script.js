@@ -86,7 +86,6 @@ function generateResults() {
   });
 
   eligible.sort((a, b) => b[1] - a[1]);
-  stretch.sort((a, b) => b[1] - a[1]);
 
   let maxScore = Math.max(...eligible.map(x => x[1]), 1);
 
@@ -150,7 +149,7 @@ function generateResults() {
   document.getElementById("results").innerHTML = output;
 }
 
-// ✅ FINAL FIXED SUBMIT FUNCTION (NO CORS ISSUE)
+// ✅ FIXED SUBMIT FUNCTION
 function submitData() {
 
   const email = emailEl().value.trim();
@@ -176,7 +175,8 @@ function submitData() {
     interest
   });
 
-  const url = "https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec" + params.toString();
+  // ✅ YOUR CORRECT URL (FIXED WITH ?)
+  const url = "https://script.google.com/macros/s/AKfycbypvJnY98gHeLGl-HE2iFrFIOmPRgbNURTWPfStfDuaWX82piG2UOQFsvO3ViIoU9kM/exec?" + params.toString();
 
   fetch(url)
     .then(res => res.text())
