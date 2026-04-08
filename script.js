@@ -348,7 +348,7 @@ function submitData() {
     phone,
     counsellor,
     course: course,
-    status: interest,
+    interest: interest,
 
     role: profile.role,
     background: profile.background,
