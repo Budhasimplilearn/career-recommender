@@ -198,10 +198,10 @@ function generateResults() {
       <option>AI for Finance by SP Jain</option>
       <option>AI Augmented Leadership By SP Jain</option>
       <option>IIT-B IC Design</option>
-      <option>IIT-B Project Management</option>
-      <option>IIM-K AI Strategy</option>
-      <option>IIM-K AI Product</option>
-      <option>IIM-Indore Analytics</option>
+      <option>IIT-B Strategic Project Management</option>
+      <option>IIM-K AI for Business Strategy</option>
+      <option>IIM-K AI for Product Development & Innovation</option>
+      <option>IIM-Indore Business Analytics</option>
       <option>IIM-Indore GM</option>
       <option>XLRI CXO</option>
     </select><br><br>
