@@ -148,22 +148,27 @@ function generateResults() {
     let confidence = Math.round((item[1] / maxScore) * 100);
 
     output += `
-    <div class="result-card">
-      ${index === 0 ? `<div class="badge">⭐ Best Match</div>` : ""}
-      <h3>#${index + 1} ${d.name}</h3>
-      <p><b>🎓 Program:</b> ${d.program}</p>
+<div class="result-card" style="margin-top:30px;">
+  <h3>📋 Capture Customer Details</h3>
 
-      <p><b>Match Score: ${confidence}%</b></p>
+  <input id="email" placeholder="Email">
+  <input id="phone" placeholder="Phone Number">
+  <input id="counsellor" placeholder="Counsellor Name">
 
-      <h4>💡 Why this fits you</h4>
-      <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
+  <select id="course">
+    <option value="">Select Course Pitched</option>
+    ...
+  </select>
 
-      <h4>📈 What you gain</h4>
-      <ul>${d.gain.map(x => `<li>${x}</li>`).join("")}</ul>
+  <select id="interest">
+    <option value="">Select Interest Outcome</option>
+    ...
+  </select>
 
-      <h4>📚 Program Highlights</h4>
-      <ul>${d.programDetails.map(x => `<li>${x}</li>`).join("")}</ul>
-    </div>
+  <button onclick="submitData()">Submit</button>
+
+  <p id="status"></p>
+</div>
     `;
   });
 
