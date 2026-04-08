@@ -3,6 +3,9 @@
     "name": "AI-Powered Product Development & Innovation",
     "program": "IIM Kozhikode",
     "tags": ["ai", "product_mgmt", "innovation"],
+    "careerFit": { "early": 1, "mid": 5, "senior": 3 },
+    "persona": "builder",
+    "transition": ["switch", "accelerate"],
     "eligibility": {
       "minExperience": 5,
       "maxExperience": 100,
@@ -30,6 +33,9 @@
     "name": "AI for Business Strategy",
     "program": "IIM Kozhikode",
     "tags": ["strategy", "ai", "lead"],
+    "careerFit": { "early": 1, "mid": 3, "senior": 5 },
+    "persona": "leader",
+    "transition": ["accelerate"],
     "eligibility": {
       "minExperience": 5,
       "maxExperience": 100,
@@ -55,7 +61,10 @@
   "project": {
     "name": "Strategic Project Management",
     "program": "IIT Bombay",
-    "tags": ["project", "execution"],
+    "tags": ["project", "execution", "lead"],
+    "careerFit": { "early": 1, "mid": 5, "senior": 4 },
+    "persona": "operator",
+    "transition": ["accelerate"],
     "eligibility": {
       "minExperience": 5,
       "maxExperience": 100,
@@ -81,7 +90,10 @@
   "ic": {
     "name": "IC Design / Semiconductor Engineering",
     "program": "IIT Bombay",
-    "tags": ["ic", "tech"],
+    "tags": ["ic", "tech", "deeptech"],
+    "careerFit": { "early": 5, "mid": 3, "senior": 1 },
+    "persona": "builder",
+    "transition": ["switch", "specialize"],
     "eligibility": {
       "minExperience": 0,
       "maxExperience": 100,
@@ -107,7 +119,10 @@
   "analytics": {
     "name": "Business Analytics & AI",
     "program": "IIM Indore",
-    "tags": ["data", "ai"],
+    "tags": ["data", "ai", "analytics"],
+    "careerFit": { "early": 4, "mid": 5, "senior": 3 },
+    "persona": "analyst",
+    "transition": ["switch", "upskill"],
     "eligibility": {
       "minExperience": 2,
       "maxExperience": 100,
@@ -134,6 +149,9 @@
     "name": "Advanced Business Strategies for CXOs",
     "program": "XLRI",
     "tags": ["cxo_int", "lead", "strategy"],
+    "careerFit": { "early": 0, "mid": 2, "senior": 5 },
+    "persona": "leader",
+    "transition": ["accelerate"],
     "eligibility": {
       "minExperience": 10,
       "maxExperience": 100,
@@ -160,6 +178,9 @@
     "name": "Executive General Management Program",
     "program": "IIM Indore",
     "tags": ["strategy", "business"],
+    "careerFit": { "early": 3, "mid": 5, "senior": 4 },
+    "persona": "generalist",
+    "transition": ["switch", "upskill"],
     "eligibility": {
       "minExperience": 2,
       "maxExperience": 100,
@@ -186,6 +207,9 @@
     "name": "AI Powered Product Management Certification",
     "program": "SP Jain",
     "tags": ["product_mgmt"],
+    "careerFit": { "early": 4, "mid": 5, "senior": 2 },
+    "persona": "builder",
+    "transition": ["switch"],
     "eligibility": {
       "minExperience": 1,
       "maxExperience": 100,
@@ -211,7 +235,10 @@
   "finance": {
     "name": "Finance Leadership with AI",
     "program": "SP Jain",
-    "tags": ["finance", "finance_int"],
+    "tags": ["finance", "ai", "finance_int"],
+    "careerFit": { "early": 1, "mid": 3, "senior": 5 },
+    "persona": "analyst",
+    "transition": ["accelerate"],
     "eligibility": {
       "minExperience": 7,
       "maxExperience": 100,
@@ -236,7 +263,10 @@
   "ai_leadership": {
     "name": "AI-Augmented Leadership",
     "program": "SP Jain",
-    "tags": ["ai", "lead"],
+    "tags": ["ai", "lead", "strategy"],
+    "careerFit": { "early": 0, "mid": 3, "senior": 5 },
+    "persona": "leader",
+    "transition": ["accelerate"],
     "eligibility": {
       "minExperience": 8,
       "maxExperience": 100,
