@@ -1,6 +1,7 @@
 let currentStep = 0;
 let answers = [];
 let programs = {};
+let topCourse = ""; // for Google Sheet
 
 const steps = document.querySelectorAll(".step");
 
@@ -24,7 +25,7 @@ function showStep(index) {
   }
 }
 
-// SELECT (single)
+// SELECT
 function select(el, val) {
   const cards = el.parentElement.querySelectorAll(".card");
   cards.forEach(c => c.classList.remove("selected"));
@@ -58,7 +59,7 @@ function prevStep() {
 }
 
 //
-// 🔹 HELPER: Convert experience
+// 🔹 EXPERIENCE CONVERSION
 //
 function getExperienceValue(exp) {
   if (exp === "0") return 0;
@@ -73,26 +74,22 @@ function getExperienceValue(exp) {
 }
 
 //
-// 🔹 ELIGIBILITY CHECK
+// 🔹 ELIGIBILITY
 //
-function checkEligibility(program, answers) {
-  let expAnswer = answers[2]; // step 3 = experience
-  let exp = getExperienceValue(expAnswer);
+function checkEligibility(program) {
 
+  let exp = getExperienceValue(answers[2]); // experience step
   let rules = program.eligibility;
 
   if (!rules) return true;
 
-  if (exp < rules.minExperience) return false;
-  if (exp > rules.maxExperience) return false;
-
-  return true;
+  return exp >= rules.minExperience && exp <= rules.maxExperience;
 }
 
 //
-// 🔹 SCORING ENGINE
+// 🔹 SCORING
 //
-function calculateScore(program, answers) {
+function calculateScore(program) {
   let score = 0;
 
   program.tags.forEach(tag => {
@@ -109,44 +106,44 @@ function calculateScore(program, answers) {
 //
 function generateResults() {
 
-  let eligiblePrograms = [];
-  let stretchPrograms = [];
+  let eligible = [];
+  let stretch = [];
 
   Object.keys(programs).forEach(key => {
 
     let program = programs[key];
+    let score = calculateScore(program);
 
-    let score = calculateScore(program, answers);
-    let isEligible = checkEligibility(program, answers);
-
-    if (isEligible) {
-      eligiblePrograms.push([key, score]);
+    if (checkEligibility(program)) {
+      eligible.push([key, score]);
     } else {
-      stretchPrograms.push([key, score]);
+      stretch.push([key, score]);
     }
 
   });
 
-  // sort both
-  eligiblePrograms.sort((a, b) => b[1] - a[1]);
-  stretchPrograms.sort((a, b) => b[1] - a[1]);
+  // sort
+  eligible.sort((a, b) => b[1] - a[1]);
+  stretch.sort((a, b) => b[1] - a[1]);
 
-  let topEligible = eligiblePrograms.slice(0, 3);
-  let topStretch = stretchPrograms.slice(0, 2);
+  let topEligible = eligible.slice(0, 3);
+  let topStretch = stretch.slice(0, 2);
 
-  let maxScore = Math.max(...eligiblePrograms.map(x => x[1]), 1);
+  let maxScore = Math.max(...eligible.map(x => x[1]), 1);
 
   let output = "";
 
-  //
-  // ✅ ELIGIBLE SECTION
-  //
+  // ✅ ELIGIBLE
   output += `<h2>🎯 Top Matches (Eligible)</h2>`;
 
   topEligible.forEach((item, index) => {
 
     let d = programs[item[0]];
     let confidence = Math.round((item[1] / maxScore) * 100);
+
+    if (index === 0) {
+      topCourse = d.name; // store for sheet
+    }
 
     output += `
     <div class="result-card">
@@ -164,29 +161,28 @@ function generateResults() {
       </div>
 
       <h4>💡 Why this fits you</h4>
-      <ul>${d.why.map(w => `<li>${w}</li>`).join("")}</ul>
+      <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
 
       <h4>📈 What you gain</h4>
-      <ul>${d.gain.map(g => `<li>${g}</li>`).join("")}</ul>
+      <ul>${d.gain.map(x => `<li>${x}</li>`).join("")}</ul>
 
       <h4>📚 Program Highlights</h4>
-      <ul>${d.programDetails.map(p => `<li>${p}</li>`).join("")}</ul>
+      <ul>${d.programDetails.map(x => `<li>${x}</li>`).join("")}</ul>
 
     </div>
     `;
   });
 
-  //
-  // ⚠️ STRETCH SECTION
-  //
+  // ⚠️ STRETCH
   if (topStretch.length > 0) {
 
-    output += `<h2 style="margin-top:30px;">⚠️ Stretch Options (Future Fit)</h2>
+    output += `
+    <h2 style="margin-top:30px;">⚠️ Stretch Options (Future Fit)</h2>
     <p style="color:#facc15;">
-    These programs are a strong fit but may require more experience.
+    These programs are strong fits but need more experience.
     </p>`;
 
-    topStretch.forEach((item) => {
+    topStretch.forEach(item => {
 
       let d = programs[item[0]];
 
@@ -197,18 +193,65 @@ function generateResults() {
         <p><b>🎓 Program:</b> ${d.program}</p>
 
         <p style="color:#f87171;">
-        Not currently eligible based on experience criteria
+        Not eligible yet based on experience
         </p>
 
         <h4>💡 Why this is a future fit</h4>
-        <ul>${d.why.map(w => `<li>${w}</li>`).join("")}</ul>
+        <ul>${d.why.map(x => `<li>${x}</li>`).join("")}</ul>
 
       </div>
       `;
     });
   }
 
+  // 🔽 FORM (IMPORTANT ADDITION)
+  output += `
+  <div class="result-card" style="margin-top:30px;">
+    <h3>📋 Capture Customer Details</h3>
+
+    <input id="email" placeholder="Email" style="width:100%;margin:10px 0;padding:10px;">
+    <input id="phone" placeholder="Phone Number" style="width:100%;margin:10px 0;padding:10px;">
+    <input id="counsellor" placeholder="Counsellor Name" style="width:100%;margin:10px 0;padding:10px;">
+
+    <button onclick="submitData()">Submit</button>
+
+    <p id="status"></p>
+  </div>
+  `;
+
   document.getElementById("results").innerHTML = output;
+}
+
+//
+// 🔹 GOOGLE SHEET SUBMIT
+//
+function submitData() {
+
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+  const counsellor = document.getElementById("counsellor").value;
+
+  if (!email || !phone || !counsellor) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+    method: "POST",
+    body: JSON.stringify({
+      email: email,
+      phone: phone,
+      course: topCourse,
+      counsellor: counsellor
+    })
+  })
+  .then(res => res.text())
+  .then(() => {
+    document.getElementById("status").innerText = "✅ Submitted successfully!";
+  })
+  .catch(() => {
+    document.getElementById("status").innerText = "❌ Submission failed";
+  });
 }
 
 // INIT
